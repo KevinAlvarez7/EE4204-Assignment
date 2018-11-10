@@ -4,7 +4,7 @@ udp_ser.c: the source file of the server in udp transmission
 
 #include "headsock.h"
 
-void str_ser(int sockfd);                                                        // transmitting and receiving function
+void str_ser(int sockfd, struct sockaddr *addr, int addrlen);             // transmitting and receiving function
 
 int main(void)
 {
@@ -34,7 +34,7 @@ int main(void)
 	while (1)
 	{
 		printf("waiting for data\n");
-		str_ser(con_fd);                                          //receive packet and response
+		str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in)));                                          //receive packet and response
 	}
 	close(sockfd);
 	exit(0);

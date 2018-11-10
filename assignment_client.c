@@ -112,7 +112,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		}
 		ci += slen;
 	}
-	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)addrlen))==-1)                                   //receive the ack
+	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, &addrlen))==-1)        //receive the ack
 	{
 		printf("error when receiving\n");
 		exit(1);
