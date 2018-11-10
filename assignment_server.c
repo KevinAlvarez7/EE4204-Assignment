@@ -34,7 +34,7 @@ int main(void)
 	while (1)
 	{
 		printf("waiting for data\n");
-		str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in)));                                          //receive packet and response
+		str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in));                                          //receive packet and response
 	}
 	close(sockfd);
 	exit(0);
@@ -54,7 +54,7 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 
 	while(!end)
 	{
-		if ((n= recvfrom(sockfd, &recvs, DATALEN, 0, addr, addrlen))==-1)                                   //receive the packet
+		if ((n= recvfrom(sockfd, &recvs, DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)                                   //receive the packet
 		{
 			printf("error when receiving\n");
 			exit(1);
