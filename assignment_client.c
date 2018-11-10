@@ -22,13 +22,13 @@ int main(int argc, char **argv)
 		printf("parameters not match");
 	}
 
-	sh = gethostbyname(argv[1]);	                                       //get host's information
+	sh = gethostbyname(argv[1]);	                      //get host's information
 	if (sh == NULL) {
 		printf("error when gethostby name");
 		exit(0);
 	}
 
-	sockfd = socket(AF_INET, SOCK_DGRAM, 0);                           //create the socket
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);            //create the socket
 	if (sockfd<0)
 	{
 		printf("error in socket");
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
   //perform the transmission and receiving
 	ti = str_cli(fp, sockfd, (struct sockaddr *)&ser_addr, sizeof(struct sockaddr_in), &len);
-	rt = (len/(float)ti);                                         //caculate the average transmission rate
+	rt = (len/(float)ti);           //caculate the average transmission rate
 	printf("Time(ms) : %.3f, Data sent(byte): %d\nData rate: %f (Kbytes/s)\n", ti, (int)len, rt);
 
 	close(sockfd);
@@ -96,8 +96,8 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	fread (buf,1,lsize,fp);
 
   /*** the whole file is loaded in the buffer. ***/
-	buf[lsize] ='\0';									//append the end byte
-	gettimeofday(&sendt, NULL);							//get the current time
+	buf[lsize] ='\0';						  //append the end byte
+	gettimeofday(&sendt, NULL);		//get the current time
 	while(ci<= lsize)
 	{
 		if ((lsize+1-ci) <= DATALEN)
@@ -112,9 +112,17 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 			printf("send error!");								//send the data
 			exit(1);
 		}
+    
+    // wait for ack after every DU
+    n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen);
+    while(n != -1 && ack.num == 1 && ack.len == 0)   //pause until receive the ack
+    {
+        printf("---------\nack received\n--------\n");
+    }
+    
 		ci += slen;
 	}
-	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)        //receive the ack
+	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)   //receive the final ack
 	{
 		printf("error when receiving\n");
 		exit(1);
@@ -122,11 +130,13 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
   else
     printf("ack received\n");
   
-	if (ack.num != 1|| ack.len != 0)
+	if (ack.num != 1|| ack.len != 0)      // it is not an ack
 		printf("error in transmission\n");
+    
+  // calculating time taken for transfer
 	gettimeofday(&recvt, NULL);
-	*len= ci;                                                         //get current time
-	tv_sub(&recvt, &sendt);                                                                 // get the whole trans time
+	*len= ci;                             //get current time
+	tv_sub(&recvt, &sendt);               // get the whole trans time
 	time_inv += (recvt.tv_sec)*1000.0 + (recvt.tv_usec)/1000.0;
 	return(time_inv);
 }

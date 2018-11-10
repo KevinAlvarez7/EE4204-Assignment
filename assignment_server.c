@@ -10,9 +10,7 @@ int main(void)
 {
 	int sockfd, ret;
 	struct sockaddr_in my_addr;
-
-//	char *buf;
-
+  
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);          //create socket
 	if (sockfd<0)
 	{
@@ -52,11 +50,25 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 
 	while(!end)
 	{
-		if ((n= recvfrom(sockfd, &recvs, DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)                                   //receive the packet
+		if ((n= recvfrom(sockfd, &recvs, DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)  //receive the packet
 		{
 			printf("error when receiving\n");
 			exit(1);
 		}
+    else
+    {
+      // send ack for successfully receiving packet
+      ack.num = 1;
+      ack.len = 0;
+      if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
+      {
+          printf("send error!");								//send the ack
+          exit(1);
+      }
+      else
+        printf("ack sent\n");
+    }
+    
 		if (recvs[n-1] == '\0')									//if it is the end of the file
 		{
 			end = 1;
@@ -67,6 +79,7 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
     printf("data received: %s\n", recvs);
 		lseek += n;
 	}
+  
 	ack.num = 1;
 	ack.len = 0;
 	if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
