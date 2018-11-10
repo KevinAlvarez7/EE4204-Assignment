@@ -114,8 +114,8 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		}
     
     // wait for ack after every DU
-    n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen);
-    while(n != -1 && ack.num == 1 && ack.len == 0)   //pause until receive the ack
+    while((n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))!= -1 && 
+        ack.num == 1 && ack.len == 0)   //pause until receive the ack
     {
         printf("---------\nack received\n--------\n");
     }
