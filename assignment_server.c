@@ -2,20 +2,16 @@
 udp_ser.c: the source file of the server in udp transmission
 ***********************************/
 
-
 #include "headsock.h"
 
 void str_ser(int sockfd);                                                        // transmitting and receiving function
 
 int main(void)
 {
-	int sockfd, con_fd, ret;
+	int sockfd, ret;
 	struct sockaddr_in my_addr;
-	struct sockaddr_in their_addr;
-	int sin_size;
 
 //	char *buf;
-	pid_t pid;
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);          //create socket
 	if (sockfd<0)
@@ -43,7 +39,7 @@ int main(void)
 	close(sockfd);
 	exit(0);
 }
-FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *len
+
 void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 {
 	char buf[BUFSIZE];
