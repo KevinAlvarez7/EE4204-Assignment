@@ -122,6 +122,8 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     
 		ci += slen;
 	}
+  
+  printf("exited while loop to send data\n");
 	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)   //receive the final ack
 	{
 		printf("error when receiving\n");

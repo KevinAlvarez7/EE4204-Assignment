@@ -80,6 +80,7 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 		lseek += n;
 	}
   
+  printf("exited while loop to receive data\n");
 	ack.num = 1;
 	ack.len = 0;
 	if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
