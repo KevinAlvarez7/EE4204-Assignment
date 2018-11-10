@@ -105,6 +105,8 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		else 
 			slen = DATALEN;
 		memcpy(sends, (buf+ci), slen);
+    printf("data sent: %s\n");
+    
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {
 			printf("send error!");								//send the data
@@ -117,6 +119,9 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		printf("error when receiving\n");
 		exit(1);
 	}
+  else
+    printf("ack received\n");
+  
 	if (ack.num != 1|| ack.len != 0)
 		printf("error in transmission\n");
 	gettimeofday(&recvt, NULL);
