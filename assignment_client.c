@@ -98,7 +98,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
   /*** the whole file is loaded in the buffer. ***/
 	buf[lsize] ='\0';						  //append the end byte
 	gettimeofday(&sendt, NULL);		//get the current time
-	while(ci<= lsize)
+	while(ci <= lsize)
 	{
 		if ((lsize+1-ci) <= DATALEN)
 			slen = lsize+1-ci;
@@ -110,14 +110,14 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {
 			printf("send error!");								//send the data
-			exit(1);
+      exit(1);
 		}
     
     // wait for ack after every DU
-    while((n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))!= -1 && 
-        ack.num == 1 && ack.len == 0)   //pause until receive the ack
+    while((n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))== -1 && 
+        (ack.num != 1 || ack.len != 0))   //pause until receive the ack
     {
-        printf("---------\nack received\n--------\n");
+        printf("---------\nack receive error\n--------\n");
     }
     
 		ci += slen;
