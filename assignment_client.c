@@ -105,7 +105,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		else 
 			slen = DATALEN;
 		memcpy(sends, (buf+ci), slen);
-    printf("data sent: %s\n");
+    printf("data sent: %s\n", sends);
     
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {

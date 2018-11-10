@@ -63,8 +63,8 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 			n --;
 		}
     
-    printf("data received: %s\n", recvs);
 		memcpy((buf+lseek), recvs, n);
+    printf("data received: %s\n", recvs);
 		lseek += n;
 	}
 	ack.num = 1;
