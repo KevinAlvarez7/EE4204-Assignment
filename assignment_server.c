@@ -53,26 +53,29 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 			printf("error when receiving\n");
 			exit(1);
 		}
-        
-    if (recvs[n-1] == '\0')									//if it is the end of the file
+    else
     {
-      end = 1;
-      n --;
+      // send ack for successfully receiving packet
+      ack.num = 1;
+      ack.len = 0;
+      if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
+      {
+          printf("send error!");								//send the ack
+          exit(1);
+      }
+      else
+        printf("ack sent\n");
     }
+    
+		if (recvs[n-1] == '\0')									//if it is the end of the file
+		{
+			end = 1;
+			n --;
+		}
+    
 		memcpy((buf+lseek), recvs, n);
     printf("data received: %s\n", recvs);
 		lseek += n;
-    
-    // send ack for successfully receiving packet
-    ack.num = 1;
-    ack.len = 0;
-    if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
-    {
-        printf("send error!");								//send the ack
-        exit(1);
-    }
-    else
-      printf("ack sent\n");
 	}
   
   printf("exited while loop to receive data\n");
