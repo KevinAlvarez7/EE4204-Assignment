@@ -29,9 +29,11 @@ int main(void)
 		exit(1);
 	}
 	
+	// while (1)
+	// {
 	printf("waiting for data\n");
 	str_ser(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr_in));                //receive packet and response
-  
+	// }
 	close(sockfd);
 	exit(0);
 }
@@ -79,15 +81,15 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 	}
   
   printf("exited while loop to receive data\n");
-	// ack.num = 1;
-	// ack.len = 0;
-	// if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
-	// {
-			// printf("send error!");								//send the ack
-			// exit(1);
-	// }
-  // else
-    // printf("ack sent\n");
+	ack.num = 1;
+	ack.len = 0;
+	if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
+	{
+			printf("send error!");								//send the ack
+			exit(1);
+	}
+  else
+    printf("ack sent\n");
   
 	if ((fp = fopen ("fileReceive.txt","wt")) == NULL)
 	{
