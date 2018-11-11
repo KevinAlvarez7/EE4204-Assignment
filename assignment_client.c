@@ -147,6 +147,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	gettimeofday(&recvt, NULL);           //get current time
 	tv_sub(&recvt, &sendt);               // get the whole trans time
 	time_inv += (recvt.tv_sec)*1000.0 + (recvt.tv_usec)/1000.0;
+  free(buf);
 	return(time_inv);
 }
 
