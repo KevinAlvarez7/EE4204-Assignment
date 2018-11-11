@@ -102,7 +102,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	while(ci <= lsize)
 	{
     // alternate between 1 and 2 DU
-    if(status % 2 == 1) {
+    if(status % 2 == 0) {
       for(int i=0; i<2; i++) {
         if ((lsize+1-ci) <= DATALEN)  // the last part of file that is < 1 or 2 DU
           slen = lsize+1-ci;
