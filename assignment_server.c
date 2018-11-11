@@ -42,15 +42,15 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 {
 	char buf[BUFSIZE];
 	FILE *fp;
-	char recvs[DATALEN];
+	char recvs[2*DATALEN];
 	struct ack_so ack;
 	int end, n = 0;
 	long lseek=0;
-	end = 0;
+  end = 0;
 
 	while(!end)
 	{
-		if ((n= recvfrom(sockfd, &recvs, DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)  //receive the packet
+		if ((n= recvfrom(sockfd, &recvs, 2*DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)  //receive the packet
 		{
 			printf("error when receiving\n");
 			exit(1);

@@ -74,12 +74,13 @@ int main(int argc, char **argv)
 float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *len)
 {
 	char *buf;
-	long lsize, ci;
-	char sends[DATALEN];
+	long lsize, ci;   //lsize=entire file size; ci=curr index of buf
+	char sends[2*DATALEN];    // to send 1 or 2 DU
 	struct ack_so ack;
-	int n, slen;
+	int n, slen, str_limit;      // slen=len of string to send (either 1DU or 2DU)
 	float time_inv = 0.0;
 	struct timeval sendt, recvt;
+  int count = 0;
 	ci = 0;
 
 	fseek (fp , 0 , SEEK_END);
@@ -88,7 +89,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	printf("The file length is %d bytes\n", (int)lsize);
 	printf("the packet length is %d bytes\n",DATALEN);
 
-// allocate memory to contain the whole file.
+  // allocate memory to contain the whole file.
 	buf = (char *) malloc (lsize);
 	if (buf == NULL) exit (2);
 
@@ -100,10 +101,12 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	gettimeofday(&sendt, NULL);		//get the current time
 	while(ci <= lsize)
 	{
-		if ((lsize+1-ci) <= DATALEN)
+    // alternate between 1 and 2 DU
+    str_limit = (count%2==0) ? DATALEN : 2*DATALEN;
+		if ((lsize+1-ci) <= str_limit)  // the last part of file that is < 1 or 2 DU
 			slen = lsize+1-ci;
 		else 
-			slen = DATALEN;
+			slen = str_limit;
 		memcpy(sends, (buf+ci), slen);
     printf("data sent: %s\n", sends);
     
