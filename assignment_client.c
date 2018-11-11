@@ -97,7 +97,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	fread (buf,1,lsize,fp);
 
   /*** the whole file is loaded in the buffer. ***/
-	buf[lsize] ='\0';						  //append the end byte
+	buf[lsize] ='\0';						  //append the end byte (extra byte sent to server)
 	gettimeofday(&sendt, NULL);		//get the current time
 	while(ci <= lsize)
 	{
@@ -108,7 +108,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		else 
 			slen = str_limit;
 		memcpy(sends, (buf+ci), slen);
-    printf("%d bytes of data sent: %s\n", slen, sends);
+    // printf("%d bytes of data sent: %s\n", slen, sends);
     
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {
@@ -125,23 +125,24 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     
 		ci += slen;
     count += 1;
-    printf("received till %d bytes\n", (int)ci);
+    // printf("received till %d bytes\n", (int)ci);
 	}
   
-  printf("exited while loop to send data\n");
+  // printf("exited while loop to send data\n");
 	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)   //receive the final ack
 	{
 		printf("error when receiving\n");
 		exit(1);
 	}
-  else
-    printf("ack received\n");
+  // else
+    // printf("ack received\n");
   
 	if (ack.num != 1|| ack.len != 0)      // it is not an ack
 		printf("error in transmission\n");
     
 	*len= ci;
-  printf("final total size %d bytes\n", (int)*len);
+  // printf("final total size %d bytes\n", (int)*len);
+  
   // calculating time taken for transfer
 	gettimeofday(&recvt, NULL);           //get current time
 	tv_sub(&recvt, &sendt);               // get the whole trans time
