@@ -120,7 +120,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
         
         ci += slen;
       }
-      printf("Even interval; 2DU\n");
+      //printf("Even interval; 2DU\n");
     } else {
       if ((lsize+1-ci) <= DATALEN)  // the last part of file that is < 1 or 2 DU
         slen = lsize+1-ci;
@@ -137,7 +137,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
       }
       
       ci += slen;
-      printf("Odd interval; 1DU\n");
+      //printf("Odd interval; 1DU\n");
     }
     
     if ((n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))== -1) { //receive the ack
@@ -147,7 +147,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     if (ack.num != 1 || ack.len != 0) {
       printf("error in transmission\n");
     }
-    printf("Packet acknowledged: %d\n", status);
+    //printf("Packet acknowledged: %d\n", status);
     
     // to track whether to send 1DU or 2*1DU
     status += 1;

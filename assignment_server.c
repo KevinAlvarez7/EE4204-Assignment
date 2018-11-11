@@ -64,7 +64,7 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
       n --;
     }
 		memcpy((buf+lseek), recvs, n);
-    printf("%d bytes of data received: %s\n", n, recvs);
+    // printf("%d bytes of data received: %s\n", n, recvs);
 		lseek += n;
     
     // send ack for successfully receiving packet (1DU or 2*1DU)
@@ -76,8 +76,8 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
           printf("send error!");								//send the ack
           exit(1);
       }
-      else
-        printf("ack sent\n");
+      // else
+        // printf("ack sent\n");
     }
     
     status += 1;
