@@ -125,7 +125,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     
 		ci += slen;
     count += 1;
-    printf("received till %d bytes\n", ci);
+    printf("received till %d bytes\n", (int)ci);
 	}
   
   printf("exited while loop to send data\n");
@@ -141,7 +141,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		printf("error in transmission\n");
     
 	*len= ci;
-  printf("final total size %d bytes\n", *len);
+  printf("final total size %d bytes\n", (int)*len);
   // calculating time taken for transfer
 	gettimeofday(&recvt, NULL);           //get current time
 	tv_sub(&recvt, &sendt);               // get the whole trans time
