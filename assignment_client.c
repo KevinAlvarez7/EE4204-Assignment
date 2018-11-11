@@ -124,6 +124,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     }
     
 		ci += slen;
+    count += 1;
 	}
   
   printf("exited while loop to send data\n");
