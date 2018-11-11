@@ -108,7 +108,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		else 
 			slen = str_limit;
 		memcpy(sends, (buf+ci), slen);
-    printf("data sent: %s\n", sends);
+    printf("%d bytes of data sent: %s\n", str_limit, sends);
     
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {

@@ -62,7 +62,7 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
       n --;
     }
 		memcpy((buf+lseek), recvs, n);
-    printf("data received: %s\n", recvs);
+    printf("%d bytes of data received: %s\n", n, recvs);
 		lseek += n;
     
     // send ack for successfully receiving packet
