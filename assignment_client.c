@@ -101,6 +101,9 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	gettimeofday(&sendt, NULL);		//get the current time
 	while(ci <= lsize)
 	{
+    // to track whether to send 1DU or 2*1DU
+    status++;
+    
     // alternate between 1 and 2 DU
     if(status % 2 == 0) {
       for(int i=0; i<2; i++) {
@@ -148,22 +151,19 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
       printf("error in transmission\n");
     }
     //printf("Packet acknowledged: %d\n", status);
-    
-    // to track whether to send 1DU or 2*1DU
-    status += 1;
 	}
   
   // printf("exited while loop to send data\n");
-	if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)   //receive the final ack
-	{
-		printf("error when receiving\n");
-		exit(1);
-	}
+	// if ((n= recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))==-1)   //receive the final ack
+	// {
+		// printf("error when receiving\n");
+		// exit(1);
+	// }
   // else
     // printf("ack received\n");
   
-	if (ack.num != 1|| ack.len != 0)      // it is not an ack
-		printf("error in transmission\n");
+	// if (ack.num != 1|| ack.len != 0)      // it is not an ack
+		// printf("error in transmission\n");
     
 	*len= ci;
   // printf("final total size %d bytes\n", (int)*len);

@@ -80,17 +80,17 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
         // printf("ack sent\n");
     }
     
-    status += 1;
+    status++;
 	}
   
   // printf("exited while loop to receive data\n");
-	ack.num = 1;
-	ack.len = 0;
-	if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
-	{
-			printf("send error!");								//send the ack
-			exit(1);
-	}
+	// ack.num = 1;
+	// ack.len = 0;
+	// if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
+	// {
+			// printf("send error!");								//send the ack
+			// exit(1);
+	// }
   // else
     // printf("ack sent\n");
   
