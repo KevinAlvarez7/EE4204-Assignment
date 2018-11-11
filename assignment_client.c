@@ -77,10 +77,10 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	long lsize, ci;   //lsize=entire file size; ci=curr index of buf
 	char sends[2*DATALEN];    // to send 1 or 2 DU
 	struct ack_so ack;
-	int n, slen, str_limit;      // slen=len of string to send (either 1DU or 2DU)
+	int n, slen;      // slen=len of string to send (either 1DU or 2*1DU)
 	float time_inv = 0.0;
 	struct timeval sendt, recvt;
-  int count = 0;
+  int status = 1;
 	ci = 0;
 
 	fseek (fp , 0 , SEEK_END);
@@ -102,30 +102,55 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	while(ci <= lsize)
 	{
     // alternate between 1 and 2 DU
-    str_limit = (count%2==0) ? DATALEN : 2*DATALEN;
-		if ((lsize+1-ci) <= str_limit)  // the last part of file that is < 1 or 2 DU
-			slen = lsize+1-ci;
-		else 
-			slen = str_limit;
-		memcpy(sends, (buf+ci), slen);
-    // printf("%d bytes of data sent: %s\n", slen, sends);
-    
-		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
-		if(n == -1) {
-			printf("send error!");								//send the data
-      exit(1);
-		}
-    
-    // wait for ack after every DU
-    while((n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))== -1 && 
-        (ack.num != 1 || ack.len != 0))   //pause until receive the ack
-    {
-        printf("---------\nack receive error\n--------\n");
+    if(status % 2 == 1) {
+      for(int i=0; i<2; i++) {
+        if ((lsize+1-ci) <= DATALEN)  // the last part of file that is < 1 or 2 DU
+          slen = lsize+1-ci;
+        else 
+          slen = DATALEN;
+        
+        memcpy(sends, (buf+ci), slen);
+        // printf("%d bytes of data sent: %s\n", slen, sends);
+        
+        n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
+        if(n == -1) {
+          printf("send error!");								//send the data
+          exit(1);
+        }
+        
+        ci += slen;
+      }
+      printf("Even interval; 2DU\n");
+    } else {
+      if ((lsize+1-ci) <= DATALEN)  // the last part of file that is < 1 or 2 DU
+        slen = lsize+1-ci;
+      else 
+        slen = DATALEN;
+      
+      memcpy(sends, (buf+ci), slen);
+      // printf("%d bytes of data sent: %s\n", slen, sends);
+      
+      n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
+      if(n == -1) {
+        printf("send error!");								//send the data
+        exit(1);
+      }
+      
+      ci += slen;
+      printf("Odd interval; 1DU\n");
     }
     
-		ci += slen;
-    count += 1;
-    // printf("received till %d bytes\n", (int)ci);
+    if (n = recvfrom(sockfd, &ack, 2, 0, addr, (socklen_t *)&addrlen))== -1) { //receive the ack
+      printf("error when receiving ack\n");
+      exit(1);
+    }
+    if (ack.num != 1 || ack.len != 0) {
+      printf("error in transmission\n");
+    }
+    printf("Packet acknowledged: %d\n", status);
+    
+    // to track whether to send 1DU or 2*1DU
+    status += 1;
 	}
   
   // printf("exited while loop to send data\n");

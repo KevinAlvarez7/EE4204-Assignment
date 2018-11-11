@@ -44,10 +44,14 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
 	struct ack_so ack;
 	int end, n = 0;
 	long lseek=0;
+  int status = 0;
   end = 0;
 
 	while(!end)
 	{
+    if(status == 3)
+      status = 0;
+    
 		if ((n= recvfrom(sockfd, &recvs, 2*DATALEN, 0, addr, (socklen_t *)&addrlen))==-1)  //receive the packet
 		{
 			printf("error when receiving\n");
@@ -63,16 +67,20 @@ void str_ser(int sockfd, struct sockaddr *addr, int addrlen)
     // printf("%d bytes of data received: %s\n", n, recvs);
 		lseek += n;
     
-    // send ack for successfully receiving packet
-    ack.num = 1;
-    ack.len = 0;
-    if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
-    {
-        printf("send error!");								//send the ack
-        exit(1);
+    // send ack for successfully receiving packet (1DU or 2*1DU)
+    if(status == 0 || status == 2) {
+      ack.num = 1;
+      ack.len = 0;
+      if ((n = sendto(sockfd, &ack, 2, 0, addr, addrlen))==-1)
+      {
+          printf("send error!");								//send the ack
+          exit(1);
+      }
+      // else
+        // printf("ack sent\n");
     }
-    // else
-      // printf("ack sent\n");
+    
+    status += 1;
 	}
   
   // printf("exited while loop to receive data\n");
