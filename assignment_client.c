@@ -108,7 +108,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 		else 
 			slen = str_limit;
 		memcpy(sends, (buf+ci), slen);
-    printf("%d bytes of data sent: %s\n", str_limit, sends);
+    printf("%d bytes of data sent: %s\n", slen, sends);
     
 		n = sendto(sockfd, &sends, slen, 0, addr, addrlen);
 		if(n == -1) {
@@ -125,6 +125,7 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
     
 		ci += slen;
     count += 1;
+    printf("received till %d bytes\n", ci);
 	}
   
   printf("exited while loop to send data\n");
@@ -139,9 +140,10 @@ float str_cli(FILE *fp, int sockfd, struct sockaddr *addr, int addrlen, long *le
 	if (ack.num != 1|| ack.len != 0)      // it is not an ack
 		printf("error in transmission\n");
     
+	*len= ci;
+  printf("final total size %d bytes\n", *len);
   // calculating time taken for transfer
-	gettimeofday(&recvt, NULL);
-	*len= ci;                             //get current time
+	gettimeofday(&recvt, NULL);           //get current time
 	tv_sub(&recvt, &sendt);               // get the whole trans time
 	time_inv += (recvt.tv_sec)*1000.0 + (recvt.tv_usec)/1000.0;
 	return(time_inv);
